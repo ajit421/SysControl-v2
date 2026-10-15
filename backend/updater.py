@@ -152,11 +152,11 @@ def apply_update(update_info):
         with open(bat, "w") as f:
             f.write('@echo off\n')
             f.write(f'taskkill /F /IM "{exe_name}" >nul 2>&1\n')
+            f.write('taskkill /F /IM "cloudflared.exe" >nul 2>&1\n')
             f.write('timeout /t 3 /nobreak >nul\n')
-            f.write(f'taskkill /F /IM "{exe_name}" >nul 2>&1\n')
-            f.write('timeout /t 2 /nobreak >nul\n')
             f.write(f'del /F "{current_exe}"\n')
             f.write(f'if exist "{current_exe}" (\n')
+            f.write(f'  taskkill /F /IM "{exe_name}" >nul 2>&1\n')
             f.write('  timeout /t 3 /nobreak >nul\n')
             f.write(f'  del /F "{current_exe}"\n')
             f.write(')\n')
@@ -168,10 +168,8 @@ def apply_update(update_info):
         config.set_version(version)
 
         subprocess.Popen(["cmd", "/c", bat], creationflags=_NO_WINDOW)
-        sys.exit(0)
+        os._exit(0)
 
-    except SystemExit:
-        raise
     except Exception as e:
         _set_status("error", error=str(e))
         return {"ok": False, "error": str(e)}
