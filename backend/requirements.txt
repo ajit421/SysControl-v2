@@ -1,0 +1,11 @@
+mss==10.1.0
+Pillow==11.2.1
+keyring==25.6.0
+pyttsx3==2.99
+requests==2.32.5
+pyperclip==1.11.0
+pynput==1.7.7
+sounddevice==0.5.1
+PyJWT==2.10.1
+bcrypt==4.3.0
+opencv-python-headless>=4.10.0

@@ -1,0 +1,9 @@
+{
+  "name": "SysControl",
+  "short_name": "SysControl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e17",
+  "theme_color": "#0a0e17",
+  "description": "Remote System Monitor"
+}
