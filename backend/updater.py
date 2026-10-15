@@ -147,12 +147,20 @@ def apply_update(update_info):
 
         _set_status("installing", percent=100, downloaded=downloaded, version=version)
 
+        exe_name = os.path.basename(current_exe)
         bat = current_exe + ".update.bat"
         with open(bat, "w") as f:
             f.write('@echo off\n')
+            f.write(f'taskkill /F /IM "{exe_name}" >nul 2>&1\n')
             f.write('timeout /t 3 /nobreak >nul\n')
-            f.write(f'del "{current_exe}"\n')
-            f.write(f'move "{new_exe}" "{current_exe}"\n')
+            f.write(f'taskkill /F /IM "{exe_name}" >nul 2>&1\n')
+            f.write('timeout /t 2 /nobreak >nul\n')
+            f.write(f'del /F "{current_exe}"\n')
+            f.write(f'if exist "{current_exe}" (\n')
+            f.write('  timeout /t 3 /nobreak >nul\n')
+            f.write(f'  del /F "{current_exe}"\n')
+            f.write(')\n')
+            f.write(f'move /Y "{new_exe}" "{current_exe}"\n')
             f.write(f'start "" "{current_exe}"\n')
             f.write(f'del "%~f0"\n')
 
