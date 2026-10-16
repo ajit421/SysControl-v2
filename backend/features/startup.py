@@ -1,4 +1,4 @@
-"""Windows startup — bulletproof auto-start using Task Scheduler + Registry fallback."""
+"""Windows startup — auto-start using Task Scheduler + Registry fallback."""
 import sys
 import os
 import platform
@@ -32,6 +32,16 @@ def _run_silent(args, timeout=10):
         return True
     except Exception:
         return False
+
+
+def _remove_motw(path):
+    """Remove 'downloaded from internet' mark so Windows doesn't block on startup."""
+    try:
+        ads = path + ":Zone.Identifier"
+        if os.path.exists(ads):
+            os.remove(ads)
+    except Exception:
+        pass
 
 
 def is_enabled():
@@ -68,8 +78,11 @@ def enable():
     if not exe:
         return {"ok": False, "error": "Only works with the built .exe"}
 
+    _remove_motw(exe)
+
     ok = False
 
+    # Method 1: Task Scheduler (needs admin — run exe as admin for this to work)
     try:
         _run_silent(["schtasks", "/Delete", "/TN", TASK_NAME, "/F"])
     except Exception:
@@ -93,6 +106,7 @@ def enable():
     except Exception:
         pass
 
+    # Method 2: Registry Run key (no admin needed)
     try:
         import winreg
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, REG_PATH, 0, winreg.KEY_SET_VALUE)
@@ -130,6 +144,9 @@ def auto_setup():
         return
     if not getattr(sys, "frozen", False):
         return
+    exe = _get_exe_path()
+    if exe:
+        _remove_motw(exe)
     if is_enabled():
         return
     enable()
