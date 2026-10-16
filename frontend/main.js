@@ -35,14 +35,14 @@ function doAuth() {
   if (!username || !password) { $("authError").textContent = "Enter username and password"; return; }
 
   $("authBtn").disabled = true;
-  $("authBtn").textContent = "Logging in...";
+  $("authBtn").textContent = "Authenticating...";
   $("authError").textContent = "";
 
   fetch(GAS_URL + "?action=login&username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password))
     .then(function(r) { return r.json(); })
     .then(function(d) {
       $("authBtn").disabled = false;
-      $("authBtn").textContent = "Login";
+      $("authBtn").textContent = "Authenticate";
       if (d.ok) {
         authUser = d.username || username;
         try { localStorage.setItem("sc_user", authUser); } catch(e) {}
@@ -55,7 +55,7 @@ function doAuth() {
     })
     .catch(function(e) {
       $("authBtn").disabled = false;
-      $("authBtn").textContent = "Login";
+      $("authBtn").textContent = "Authenticate";
       $("authError").textContent = "Cannot reach server: " + e.message;
     });
 }
@@ -331,7 +331,7 @@ function showPanel() {
   $("panelName").textContent = conn.device;
   $("panelVersion").textContent = "v" + conn.version;
   $("chatArea").innerHTML = "";
-  addMsg("bot", "Connected to " + conn.device + " (v" + conn.version + ")\n\nUse the buttons below or type a command.");
+  addMsg("bot", "> connected: " + conn.device + " [v" + conn.version + "]\n> use controls below or type a command");
   startHealth();
 }
 
@@ -566,7 +566,7 @@ function renderExplorer(items, error, filtering) {
   var list = $("exList"); list.innerHTML = "";
   if (!filtering && exParent && exParent !== exPath) {
     var up = document.createElement("div"); up.className = "ex-item";
-    up.innerHTML = '<span class="ex-i">&#128281;</span><div class="ex-inf"><div class="ex-n">..</div></div>';
+    up.innerHTML = '<span class="ex-i">..</span><div class="ex-inf"><div class="ex-n">..</div></div>';
     up.onclick = function() { openExplorer(exParent); };
     list.appendChild(up);
   }
@@ -576,11 +576,11 @@ function renderExplorer(items, error, filtering) {
     var row = document.createElement("div"); row.className = "ex-item";
     var fp = exPath + "\\" + item.name;
     row.innerHTML =
-      '<span class="ex-i">' + (item.is_dir ? "&#128193;" : "&#128196;") + '</span>' +
+      '<span class="ex-i">' + (item.is_dir ? "/" : ".") + '</span>' +
       '<div class="ex-inf"><div class="ex-n">' + esc(item.name) + '</div><div class="ex-m">' + (item.is_dir ? "Folder" : fmtSize(item.size)) + '</div></div>' +
-      (!item.is_dir ? '<button class="ex-a" onclick="event.stopPropagation();dlFile(\'' + esc(fp.replace(/'/g, "\\'")) + '\',\'' + esc(item.name.replace(/'/g, "\\'")) + '\')">&#8595;</button>' : '') +
-      '<button class="ex-a" onclick="event.stopPropagation();renItem(\'' + esc(fp.replace(/'/g, "\\'")) + '\',\'' + esc(item.name.replace(/'/g, "\\'")) + '\')">&#9998;</button>' +
-      '<button class="ex-a del" onclick="event.stopPropagation();delItem(\'' + esc(fp.replace(/'/g, "\\'")) + '\',\'' + esc(item.name.replace(/'/g, "\\'")) + '\',' + item.is_dir + ')">&#128465;</button>';
+      (!item.is_dir ? '<button class="ex-a" onclick="event.stopPropagation();dlFile(\'' + esc(fp.replace(/'/g, "\\'")) + '\',\'' + esc(item.name.replace(/'/g, "\\'")) + '\')">dl</button>' : '') +
+      '<button class="ex-a" onclick="event.stopPropagation();renItem(\'' + esc(fp.replace(/'/g, "\\'")) + '\',\'' + esc(item.name.replace(/'/g, "\\'")) + '\')">rn</button>' +
+      '<button class="ex-a del" onclick="event.stopPropagation();delItem(\'' + esc(fp.replace(/'/g, "\\'")) + '\',\'' + esc(item.name.replace(/'/g, "\\'")) + '\',' + item.is_dir + ')">rm</button>';
     if (item.is_dir) { row.style.cursor = "pointer"; (function(p) { row.onclick = function() { openExplorer(p); }; })(fp); }
     else if (isEditable(item.name) && item.size <= 1048576) { row.style.cursor = "pointer"; (function(p) { row.onclick = function() { openEditor(p); }; })(fp); }
     list.appendChild(row);
@@ -840,9 +840,9 @@ function checkUpdate() {
         }
         _updateSetBody(
           '<div style="text-align:center;padding:8px 0">' +
-            '<div style="font-size:32px;margin-bottom:12px">&#128260;</div>' +
-            '<p style="font-size:18px;font-weight:600;margin-bottom:16px">Update Available!</p>' +
-            '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:left">' +
+            '<div style="font-size:20px;margin-bottom:12px;color:var(--cyan)">[~]</div>' +
+            '<p style="font-size:14px;margin-bottom:16px;color:var(--accent)">Update Available</p>' +
+            '<div style="background:var(--bg2);border:1px solid var(--border);padding:14px;text-align:left">' +
               '<p><span style="color:var(--dim)">Current:</span> <strong>v' + esc(d.current) + '</strong></p>' +
               '<p style="margin-top:6px"><span style="color:var(--dim)">Latest:</span> <strong style="color:var(--green)">v' + esc(d.version) + '</strong></p>' +
               (dateStr ? '<p style="margin-top:6px"><span style="color:var(--dim)">Date:</span> ' + esc(dateStr) + '</p>' : '') +
@@ -853,8 +853,8 @@ function checkUpdate() {
       } else {
         _updateSetBody(
           '<div style="text-align:center;padding:20px 0">' +
-            '<div style="font-size:32px;margin-bottom:12px">&#9989;</div>' +
-            '<p style="font-size:16px;font-weight:600">You\'re up to date!</p>' +
+            '<div style="font-size:20px;margin-bottom:12px;color:var(--green)">[OK]</div>' +
+            '<p style="font-size:14px;color:var(--green)">System up to date</p>' +
             '<p style="color:var(--dim);margin-top:6px">Running v' + esc(d.current) + '</p>' +
           '</div>', "none", "flex");
       }
@@ -862,7 +862,7 @@ function checkUpdate() {
     .catch(function() {
       _updateSetBody(
         '<div style="text-align:center;padding:20px 0">' +
-          '<div style="font-size:32px;margin-bottom:12px">&#10060;</div>' +
+          '<div style="font-size:20px;margin-bottom:12px;color:var(--red)">[ERR]</div>' +
           '<p style="color:var(--red)">Failed to check for updates</p>' +
         '</div>', "none", "flex");
     });
@@ -875,9 +875,11 @@ function _updateSetBody(html, actionsDisplay, closeDisplay) {
 }
 
 function _progressBar(pct) {
-  return '<div style="background:var(--bg2);border-radius:6px;height:8px;margin-top:16px;overflow:hidden">' +
-    '<div style="background:var(--accent);height:100%;width:' + pct + '%;border-radius:6px;transition:width 0.3s"></div></div>' +
-    '<p style="color:var(--dim);font-size:12px;margin-top:6px;text-align:center">' + pct + '%</p>';
+  var filled = Math.round(pct / 5);
+  var empty = 20 - filled;
+  var bar = '[' + '█'.repeat(filled) + '░'.repeat(empty) + ']';
+  return '<p style="color:var(--accent);font-size:13px;margin-top:16px;text-align:center;letter-spacing:1px">' + bar + '</p>' +
+    '<p style="color:var(--dim);font-size:11px;margin-top:4px;text-align:center">' + pct + '%</p>';
 }
 
 function applyUpdate() {
@@ -893,8 +895,8 @@ function applyUpdate() {
     .then(function() {
       _updateSetBody(
         '<div style="text-align:center;padding:12px 0">' +
-          '<div style="font-size:32px;margin-bottom:12px">&#11015;</div>' +
-          '<p style="font-size:16px;font-weight:600">Downloading v' + esc(_updateInfo.version) + '...</p>' +
+          '<div style="font-size:20px;margin-bottom:12px;color:var(--cyan)">[>>]</div>' +
+          '<p style="font-size:14px;color:var(--accent)">Downloading v' + esc(_updateInfo.version) + '...</p>' +
           _progressBar(0) +
         '</div>', "none", "none");
       _startUpdatePoll();
@@ -918,16 +920,16 @@ function _startUpdatePoll() {
         if (s.state === "downloading") {
           _updateSetBody(
             '<div style="text-align:center;padding:12px 0">' +
-              '<div style="font-size:32px;margin-bottom:12px">&#11015;</div>' +
-              '<p style="font-size:16px;font-weight:600">Downloading v' + esc(s.version) + '...</p>' +
+              '<div style="font-size:20px;margin-bottom:12px;color:var(--cyan)">[>>]</div>' +
+              '<p style="font-size:14px;color:var(--accent)">Downloading v' + esc(s.version) + '...</p>' +
               '<p style="color:var(--dim);font-size:12px;margin-top:4px">' + (s.downloaded / 1048576).toFixed(1) + ' MB</p>' +
               _progressBar(s.percent) +
             '</div>', "none", "none");
         } else if (s.state === "installing") {
           _updateSetBody(
             '<div style="text-align:center;padding:20px 0">' +
-              '<div style="font-size:32px;margin-bottom:12px">&#128260;</div>' +
-              '<p style="font-size:16px;font-weight:600">Installing...</p>' +
+              '<div style="font-size:20px;margin-bottom:12px;color:var(--cyan)">[...]</div>' +
+              '<p style="font-size:14px;color:var(--accent)">Installing...</p>' +
               '<p style="color:var(--dim);margin-top:6px">The app will restart in a few seconds.</p>' +
               _progressBar(100) +
             '</div>', "none", "none");
@@ -935,8 +937,8 @@ function _startUpdatePoll() {
           _stopUpdatePoll();
           _updateSetBody(
             '<div style="text-align:center;padding:20px 0">' +
-              '<div style="font-size:32px;margin-bottom:12px">&#10060;</div>' +
-              '<p style="color:var(--red);font-weight:600">Update Failed</p>' +
+              '<div style="font-size:20px;margin-bottom:12px;color:var(--red)">[ERR]</div>' +
+              '<p style="color:var(--red)">Update Failed</p>' +
               '<p style="color:var(--dim);margin-top:6px">' + esc(s.error) + '</p>' +
             '</div>', "none", "flex");
         }
@@ -955,8 +957,8 @@ function _showReconnecting() {
   var ver = _updateInfo ? _updateInfo.version : "";
   _updateSetBody(
     '<div style="text-align:center;padding:20px 0">' +
-      '<div style="font-size:32px;margin-bottom:12px">&#128260;</div>' +
-      '<p style="font-size:16px;font-weight:600">Restarting app...</p>' +
+      '<div style="font-size:20px;margin-bottom:12px;color:var(--cyan)">[..]</div>' +
+      '<p style="font-size:14px;color:var(--accent)">Restarting app...</p>' +
       '<p style="color:var(--dim);margin-top:6px">Waiting for device to come back online.</p>' +
     '</div>', "none", "none");
   var attempts = 0;
@@ -972,8 +974,8 @@ function _showReconnecting() {
           if (vt) vt.textContent = "v" + conn.version;
           _updateSetBody(
             '<div style="text-align:center;padding:20px 0">' +
-              '<div style="font-size:32px;margin-bottom:12px">&#9989;</div>' +
-              '<p style="font-size:16px;font-weight:600;color:var(--green)">Update Complete!</p>' +
+              '<div style="font-size:20px;margin-bottom:12px;color:var(--green)">[OK]</div>' +
+              '<p style="font-size:14px;color:var(--green)">Update Complete</p>' +
               '<p style="color:var(--dim);margin-top:6px">Now running v' + esc(d.version || ver) + '</p>' +
             '</div>', "none", "flex");
         }
@@ -983,8 +985,8 @@ function _showReconnecting() {
           clearInterval(reconnect);
           _updateSetBody(
             '<div style="text-align:center;padding:20px 0">' +
-              '<div style="font-size:32px;margin-bottom:12px">&#9888;&#65039;</div>' +
-              '<p style="font-weight:600">Device not responding</p>' +
+              '<div style="font-size:20px;margin-bottom:12px;color:var(--yellow)">[!]</div>' +
+              '<p style="color:var(--yellow)">Device not responding</p>' +
               '<p style="color:var(--dim);margin-top:6px">The update may still be installing. Try refreshing later.</p>' +
             '</div>', "none", "flex");
         }

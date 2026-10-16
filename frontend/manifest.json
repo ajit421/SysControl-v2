@@ -3,7 +3,7 @@
   "short_name": "SysControl",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0e17",
-  "theme_color": "#0a0e17",
-  "description": "Remote System Monitor"
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Remote System Terminal"
 }
